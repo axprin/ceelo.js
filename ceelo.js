@@ -13,9 +13,7 @@ function roll() {
 }
 
 function findDuplicates(array) {
-  var len=array.length,
-      out=[],
-      counts={};
+  var len=array.length, out=[], counts={};
 
   for (var i=0;i<len;i++) {
     var item = array[i];
@@ -32,41 +30,32 @@ function findDuplicates(array) {
 function checkRoll(array) {
 	var result = {};
 
-	// console.log(array);
 	if (array[0] === array[1] && array [0] === array[2]) {
-		// console.log("You got trips!");
 		result.level = "trips";
 		result.score = array[0];
-		// console.log("result: ", result);
 	} else if (findDuplicates(array).length > 0) {
-		// console.log("You got two of a kind!");
 		var dupes = findDuplicates(array)[0];
-		// console.log("dupes: ", dupes)
 		for (var i = 0; i < 3; i++) {
 			if (array[i] != dupes) {
 				var point = array[i];
-				// console.log("point: ", point);
 				result.level = "point";
 				result.score = point;
-				// console.log("result: ", result);
 			}
 		}
 	} else if (array === [ 1, 2, 3 ]) {
-		// console.log("You got 1-2-3, you lose!");
 		result.level = "lose";
 		result.score = "1-2-3";
-		// console.log("result: ", result);
 	} else if (array === [ 4, 5, 6 ]) {
-		// console.log("You got 4-5-6, you win!!");
 		result.level = "win";
 		result.score = "4-5-6";
-		// console.log("result: ", result);
 	} else {
-		// console.log("REROLLING!");
-		checkRoll(roll());
+		return checkRoll(roll());
 	}
-
 	return result; 
+}
+
+function filterBadRolls(roll) {
+	console.log("roll: ", roll);
 }
 
 function setUpGame(numberOfPlayers) {
@@ -76,24 +65,22 @@ function setUpGame(numberOfPlayers) {
 	for ( var i = 1; i < players; i++) {
 		var player = {};
 		player.playerName = "player" + i;
-		console.log("player: ", player.playerName);
-		console.log(player.typeof)
 		allPlayers.push(player);
 	}
-	// console.log('allPlayers: ', allPlayers);
+
 	return allPlayers;
 }
 
 function assignRoll(player, result) {
-	// player.roll = result.level;
-	// player.score = result.score;
-	// console.log("player[playerName]: ", player[playerName]);
+	player.roll = result.level;
+	player.score = result.score;
+	console.log("player ", player);
 	// console.log("result: ", result);
 }
 
-// function compareRolls(userArray) {
-// 	console.log("userArray: ", userArray);
-// }
+function compareRolls(userArray) {
+	console.log("userArray: ", userArray);
+}
 
 function play(commandLineInput) {
 	// set up the game by establishing how many players from CL input
@@ -101,13 +88,13 @@ function play(commandLineInput) {
 	var allPlayers = setUpGame(numberOfPlayers);
 	console.log("allPlayers: ",allPlayers);
 	console.log("allPlayers.length: ",allPlayers.length);
-	// iterate through all players and roll
-	for (var player in allPlayers) {
-		if (allPlayers.hasOwnProperty(player)) {
-			console.log("PLAYER: ", Object.keys(player));
-			var result = checkRoll(roll());
-			// assignRoll(player, result);
-		}
+
+	for (var i = 0, noOfPlayers = allPlayers.length; i < noOfPlayers; i++) {
+		var player = allPlayers[i]
+		var result = checkRoll(roll());
+
+		// console.log("player: ", player.playerName);
+		assignRoll(player, result);
 	}
 }
 
